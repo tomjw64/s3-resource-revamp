@@ -1,0 +1,15 @@
+{
+    "Contents": [
+        {
+            "Key": "file.txt",
+            "LastModified": "2019-11-21T22:10:17.130Z",
+            "ETag": "\"8acbe8269ef193c7d541e56c8ca1e6d0\"",
+            "Size": 88,
+            "StorageClass": "STANDARD",
+            "Owner": {
+                "DisplayName": "",
+                "ID": ""
+            }
+        }
+    ]
+}
