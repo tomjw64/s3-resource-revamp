@@ -98,8 +98,9 @@ def check(in_stream):
         new_versions = reduce(key_regexp_max_version(regexp_filter), matching_objects, [])
     else:
         threshold_semver = parse_semver_array_from_string(version_filter)
-        new_versions = list(filter(key_regexp_version_not_less_than(regexp_filter, threshold_semver), matching_objects))
-    
+        new_versions = list(filter(key_regexp_version_not_less_than(regexp_filter, threshold_semver),
+                                   matching_objects))
+
     return new_versions
 
 

@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 
 import pytest
-from botocore.stub import Stubber
 
 from src import check
 
@@ -50,7 +49,7 @@ class TestCheck:
         input = {}
         result = check.check(make_stream(input))
         assert result == []
-    
+
     def test_check_minio_exact_match(self, mocker):
         response = read_json_file('list-objects-v2-minio.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
@@ -126,7 +125,6 @@ class TestCheck:
         result = check.check(make_stream(input))
         assert len(result) == 1259
 
-
     def test_check_aws_pretend_module_ids_are_versions_multi_group_capture(self, mocker):
         response = read_json_file('list-objects-v2-full-bucket.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
@@ -141,7 +139,6 @@ class TestCheck:
         }
         result = check.check(make_stream(input))
         assert len(result) == 1259
-
 
     def test_check_aws_pretend_module_ids_are_versions_unnamed_capture(self, mocker):
         response = read_json_file('list-objects-v2-full-bucket.json')

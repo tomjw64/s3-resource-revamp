@@ -1,5 +1,6 @@
 from functools import reduce
 
+
 def deep_get(initial_dict, *path, default=None):
     def inner_dict_or_none(acc, step):
         try:
