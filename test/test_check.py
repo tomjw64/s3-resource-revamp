@@ -50,22 +50,7 @@ class TestCheck:
         result = check.check(make_stream(input))
         assert result == []
 
-    def test_check_minio_exact_match(self, mocker):
-        response = read_json_file('list-objects-v2-minio.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
-        mocker.patch('boto3.client', return_value=mock_client)
-        input = {
-            'source': {
-                'filters': {
-                    'regexp': 'file.txt'
-                }
-            }
-        }
-        result = check.check(make_stream(input))
-        assert len(result) == 1
-        assert result[0]['Key'] == 'file.txt'
-
-    def test_check_minio_no_versioning(self, mocker):
+    def test_check_minio_exact_match_latest(self, mocker):
         response = read_json_file('list-objects-v2-minio.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
         mocker.patch('boto3.client', return_value=mock_client)
@@ -78,7 +63,6 @@ class TestCheck:
             }
         }
         result = check.check(make_stream(input))
-        assert len(result) == 1
         assert result[0]['Key'] == 'file.txt'
 
     def test_check_minio_multiple_match_latest(self, mocker):
@@ -105,6 +89,7 @@ class TestCheck:
             'source': {
                 'filters': {
                     'regexp': r'file.te?xt',
+                    'version': 'every'
                 }
             }
         }
@@ -119,6 +104,7 @@ class TestCheck:
             'source': {
                 'filters': {
                     'regexp': r'book/m(?P<version>\d+)/.*',
+                    'version': 'every'
                 }
             }
         }
@@ -148,6 +134,7 @@ class TestCheck:
             'source': {
                 'filters': {
                     'regexp': r'book/m(\d+)/.*',
+                    'version': 'every'
                 }
             }
         }
