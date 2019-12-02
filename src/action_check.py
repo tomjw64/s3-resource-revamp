@@ -58,7 +58,7 @@ def key_regexp_version_not_less_than(regexp_filter, threshold_semver):
     return partial
 
 
-def check(in_stream):
+def action_check(in_stream):
     input = json.load(in_stream)
 
     service = 's3'
@@ -105,7 +105,7 @@ def check(in_stream):
 
 
 def main():
-    print(json.dumps(check(sys.stdin)))  # pragma: no cover
+    print(json.dumps(action_check(sys.stdin)))  # pragma: no cover
 
 
 if __name__ == '__main__':

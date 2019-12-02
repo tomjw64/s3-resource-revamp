@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from src import check
+from src import action_check
 
 
 DATA_DIR = Path(__file__).resolve().parent / 'data'
@@ -31,23 +31,23 @@ def mock_s3_client_list_objects_responder(mocker, response):
 class TestCheck:
     def test_parse_semver_array_from_string_full_semver(self):
         semver = '0.1.0'
-        assert check.parse_semver_array_from_string(semver) == [0, 1, 0]
+        assert action_check.parse_semver_array_from_string(semver) == [0, 1, 0]
 
     def test_parse_semver_array_from_string_short(self):
         semver = '4'
-        assert check.parse_semver_array_from_string(semver) == [4]
+        assert action_check.parse_semver_array_from_string(semver) == [4]
 
     def test_parse_semver_array_from_string_invalid(self):
         semver = '0.F.3'
         with pytest.raises(ValueError):
-            check.parse_semver_array_from_string(semver)
+            action_check.parse_semver_array_from_string(semver)
 
     def test_check_empty(self, mocker):
         response = read_json_file('list-objects-v2-empty.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {}
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert result == []
 
     def test_check_minio_exact_match_latest(self, mocker):
@@ -62,7 +62,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert result[0]['Key'] == 'file.txt'
 
     def test_check_minio_multiple_match_latest(self, mocker):
@@ -77,7 +77,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 1
         assert result[0]['Key'] == 'file.text'
 
@@ -93,7 +93,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 2
 
     def test_check_aws_pretend_module_ids_are_versions_named_capture(self, mocker):
@@ -108,7 +108,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 1259
 
     def test_check_aws_pretend_module_ids_are_versions_multi_group_capture(self, mocker):
@@ -123,7 +123,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 1259
 
     def test_check_aws_pretend_module_ids_are_versions_unnamed_capture(self, mocker):
@@ -138,7 +138,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 1259
 
     def test_check_aws_pretend_module_ids_are_versions_threshold(self, mocker):
@@ -153,7 +153,7 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 13
 
     def test_check_aws_pretend_module_ids_are_versions_latest(self, mocker):
@@ -168,6 +168,6 @@ class TestCheck:
                 }
             }
         }
-        result = check.check(make_stream(input))
+        result = action_check.action_check(make_stream(input))
         assert len(result) == 1
         assert 'm63248' in result[0]['Key']
