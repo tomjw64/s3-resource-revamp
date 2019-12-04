@@ -37,10 +37,11 @@ def action_check(in_stream):
         Bucket=bucket,
         Prefix=prefix_filter)
 
-    if response == '' or not regexp_filter:
+    if response == {} or not regexp_filter:
+        eprint('No versions found')
         return []
 
-    response_objects = json.loads(response)['Contents']
+    response_objects = response['Contents']
     matching_objects = list(filter(key_regexp_matches(regexp_filter), response_objects))
 
     if version_filter == 'every':
