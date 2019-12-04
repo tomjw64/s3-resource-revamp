@@ -31,13 +31,11 @@ def action_check(in_stream):
         region_name=region,
         aws_access_key_id=access_key_id,
         aws_secret_access_key=secret_access_key,
-        endpoint_url=endpoint
-    )
+        endpoint_url=endpoint)
 
     response = s3_client.list_objects_v2(
         Bucket=bucket,
-        Prefix=prefix_filter
-    )
+        Prefix=prefix_filter)
 
     if response == '' or not regexp_filter:
         return []
@@ -57,9 +55,9 @@ def action_check(in_stream):
     return new_versions
 
 
-def main():
-    print(json.dumps(action_check(sys.stdin)))  # pragma: no cover
+def main():  # pragma: no cover
+    print(json.dumps(action_check(sys.stdin)))
 
 
-if __name__ == '__main__':
-    main()  # pragma: no cover
+if __name__ == '__main__':  # pragma: no cover
+    main()
