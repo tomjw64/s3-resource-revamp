@@ -24,7 +24,7 @@ main_requires = parse_requirements('requirements/main.txt')
 test_requires = parse_requirements('requirements/test.txt')
 
 setup(
-    name="s3-resource",
+    name="s3-resource-revamp",
     version='0.1.0',
     description='Concourse CI resource for s3 compatible object storage',
     long_description=read_readme(),
