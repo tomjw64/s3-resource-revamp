@@ -29,19 +29,6 @@ def mock_s3_client_list_objects_responder(mocker, response):
 
 
 class TestCheck:
-    def test_parse_semver_array_from_string_full_semver(self):
-        semver = '0.1.0'
-        assert action_check.parse_semver_array_from_string(semver) == [0, 1, 0]
-
-    def test_parse_semver_array_from_string_short(self):
-        semver = '4'
-        assert action_check.parse_semver_array_from_string(semver) == [4]
-
-    def test_parse_semver_array_from_string_invalid(self):
-        semver = '0.F.3'
-        with pytest.raises(ValueError):
-            action_check.parse_semver_array_from_string(semver)
-
     def test_check_empty(self, mocker):
         response = read_json_file('list-objects-v2-empty.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
