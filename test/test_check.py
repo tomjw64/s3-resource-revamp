@@ -53,7 +53,7 @@ class TestCheck:
         assert result[0]['Key'] == 'file.txt'
 
     def test_check_minio_bad_version(self, mocker):
-        response = read_json_file_as_dict('list-objects-v2-minio.json')
+        response = read_json_file('list-objects-v2-minio.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
