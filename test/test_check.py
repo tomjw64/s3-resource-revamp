@@ -52,6 +52,21 @@ class TestCheck:
         result = action_check.action_check(make_stream(input))
         assert result[0]['Key'] == 'file.txt'
 
+    def test_check_minio_bad_version(self, mocker):
+        response = read_json_file_as_dict('list-objects-v2-minio.json')
+        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mocker.patch('boto3.client', return_value=mock_client)
+        input = {
+            'source': {
+                'filters': {
+                    'regexp': 'file.txt',
+                    'version': 'asdf'
+                }
+            }
+        }
+        with pytest.raises(ValueError):
+            action_check.action_check(make_stream(input))
+
     def test_check_minio_multiple_match_latest(self, mocker):
         response = read_json_file('list-objects-v2-minio-multiple-match.json')
         mock_client = mock_s3_client_list_objects_responder(mocker, response)
