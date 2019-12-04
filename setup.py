@@ -42,9 +42,9 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'check = src.check:main',
-            'in = src.in_:main',
-            'out = src.out:main',
+            'check = src.action_check:main',
+            'in = src.action_in:main',
+            'out = src.action_out:main',
         ]
     }
 )
