@@ -53,6 +53,7 @@ def action_check(in_stream):
         new_versions = list(filter(key_regexp_version_not_less_than(regexp_filter, threshold_semver),
                                    matching_objects))
 
+    eprint('Versions found: ' + str(list(map(lambda obj: obj["Key"], new_versions))))
     return new_versions
 
 
