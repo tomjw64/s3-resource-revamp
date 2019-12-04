@@ -45,20 +45,23 @@ def action_check(in_stream):
     matching_objects = list(filter(key_regexp_matches(regexp_filter), response_objects))
 
     if version_filter == 'every':
-        new_versions = matching_objects
+        filtered_objects = matching_objects
     elif version_filter is None or version_filter == 'latest':
-        new_versions = reduce(key_regexp_max_version(regexp_filter), matching_objects, [])
+        filtered_objects = reduce(key_regexp_max_version(regexp_filter), matching_objects, [])
     else:
         threshold_semver = parse_semver_array_from_string(version_filter)
-        new_versions = list(filter(key_regexp_version_not_less_than(regexp_filter, threshold_semver),
-                                   matching_objects))
+        filtered_objects = list(filter(key_regexp_version_not_less_than(regexp_filter, threshold_semver),
+                                matching_objects))
 
-    eprint('Versions found: ' + str(list(map(lambda obj: obj["Key"], new_versions))))
-    return new_versions
+    object_keys = [{'key': obj['Key']} for obj in filtered_objects]
+    eprint('Versions found: ' + str(object_keys))
+    return object_keys
 
 
 def main():  # pragma: no cover
-    print(json.dumps(action_check(sys.stdin)))
+    output = json.dumps(action_check(sys.stdin))
+    eprint('Output: ' + output)
+    print(output)
 
 
 if __name__ == '__main__':  # pragma: no cover

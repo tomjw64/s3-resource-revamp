@@ -53,7 +53,7 @@ class TestCheck:
             }
         }
         result = action_check.action_check(make_stream(input))
-        assert result[0]['Key'] == 'file.txt'
+        assert result[0]['key'] == 'file.txt'
 
     def test_check_minio_bad_version(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio.json')
@@ -84,7 +84,7 @@ class TestCheck:
         }
         result = action_check.action_check(make_stream(input))
         assert len(result) == 1
-        assert result[0]['Key'] == 'file.text'
+        assert result[0]['key'] == 'file.text'
 
     def test_check_minio_multiple_match(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
@@ -175,4 +175,4 @@ class TestCheck:
         }
         result = action_check.action_check(make_stream(input))
         assert len(result) == 1
-        assert 'm63248' in result[0]['Key']
+        assert 'm63248' in result[0]['key']
