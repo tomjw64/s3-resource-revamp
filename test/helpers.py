@@ -22,7 +22,7 @@ def make_stream(json_compat_dict):
     return stream
 
 
-def mock_s3_client(mocker, *, list_response):
+def mock_s3_client(mocker, *, list_response=None):
     mock_client = mocker.Mock()
     mock_client.list_objects_v2 = mocker.Mock(return_value=list_response)
     mock_client.download_file = mocker.Mock()
