@@ -1,40 +1,16 @@
-import io
-import json
-from pathlib import Path
-
 import pytest
 
 from src import action_check
 
-
-DATA_DIR = Path(__file__).resolve().parent / 'data'
-
-
-def read_json_file_as_dict(data_file):
-    with open(DATA_DIR / data_file) as f:
-        try:
-            return json.load(f)
-        except json.decoder.JSONDecodeError:
-            return {}
-
-
-def make_stream(json_compat_dict):
-    stream = io.StringIO()
-    json.dump(json_compat_dict, stream)
-    stream.seek(0)
-    return stream
-
-
-def mock_s3_client_list_objects_responder(mocker, response):
-    mock_client = mocker.MagicMock()
-    mock_client.list_objects_v2 = mocker.MagicMock(return_value=response)
-    return mock_client
+from .helpers import (read_json_file_as_dict,
+                      make_stream,
+                      mock_s3_client)
 
 
 class TestCheck:
     def test_check_empty(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-empty.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {}
         result = action_check.action_check(make_stream(input))
@@ -42,7 +18,7 @@ class TestCheck:
 
     def test_check_minio_exact_match_latest(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -57,7 +33,7 @@ class TestCheck:
 
     def test_check_minio_bad_version(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -72,7 +48,7 @@ class TestCheck:
 
     def test_check_minio_multiple_match_latest(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -88,7 +64,7 @@ class TestCheck:
 
     def test_check_minio_multiple_match(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -103,7 +79,7 @@ class TestCheck:
 
     def test_check_aws_pretend_module_ids_are_versions_named_capture(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -118,7 +94,7 @@ class TestCheck:
 
     def test_check_aws_pretend_module_ids_are_versions_multi_group_capture(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -133,7 +109,7 @@ class TestCheck:
 
     def test_check_aws_pretend_module_ids_are_versions_unnamed_capture(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -148,7 +124,7 @@ class TestCheck:
 
     def test_check_aws_pretend_module_ids_are_versions_threshold(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
@@ -163,7 +139,7 @@ class TestCheck:
 
     def test_check_aws_pretend_module_ids_are_versions_latest(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
-        mock_client = mock_s3_client_list_objects_responder(mocker, response)
+        mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
         input = {
             'source': {
