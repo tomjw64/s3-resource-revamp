@@ -12,14 +12,15 @@ def action_in(dest_path, in_stream):
     action_mode = client.action_mode
     check_version = client.version_key
 
-    eprint('Mode: ' + action_mode)
-    eprint('Check version: ' + check_version)
+    eprint(f'Check version: {check_version}')
+    eprint(f'Mode: {action_mode}')
 
     def download_check_version():
         destination = Path(dest_path) / check_version
+        eprint(f'Downloading object - key: {check_version}, dest: {destination}')
         client.download_file(
             key=check_version,
-            destination=str(destination))
+            destination=destination)
         eprint('Object downloaded: ' + check_version)
         return {'version': {'key': check_version}}
 
@@ -28,17 +29,18 @@ def action_in(dest_path, in_stream):
         for object_key in object_keys:
             destination = Path(dest_path) / object_key['key']
             if not destination.exists():
+                eprint(f'Downloading object - key: {object_key["key"]}, dest: {destination}')
                 client.download_file(
                     key=object_key['key'],
-                    destination=str(destination))
+                    destination=destination)
 
-        eprint('Objects downloaded: ' + str(object_keys))
         # This is a garbage value
         return {'version': {'key': check_version}}
 
     return {
         'all': sync_filtered,
-        'single': download_check_version
+        'single': download_check_version,
+        None: lambda: {}
     }[action_mode]()
 
 

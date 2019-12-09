@@ -10,8 +10,11 @@ def action_out(src_path, in_stream):
     input = json.load(in_stream)
     client = ResourceBotoClient(input)
 
+    eprint(f'source path: {Path(src_path)}')
+    eprint(f'upload glob: {client.upload_glob}')
+    eprint(f'glob matches: {list(Path(src_path).glob(client.upload_glob))}')
     object_paths = list(filter(Path.is_file, Path(src_path).glob(client.upload_glob)))
-    object_key = 'None'
+    object_key = None
     for object_path in object_paths:
         object_file = str(object_path)
         object_key = str(object_path)[len(src_path)+1:]
@@ -20,7 +23,7 @@ def action_out(src_path, in_stream):
             key=object_key)
     eprint('Uploaded objects: ' + str(object_paths))
     # This is a garbage value
-    return {'version': {'key': object_key}}
+    return {'version': {'key': object_key}} if object_key is not None else {}
 
 
 def main():  # pragma: no cover

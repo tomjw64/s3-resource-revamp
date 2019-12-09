@@ -1,5 +1,4 @@
 import boto3
-import botocore
 from functools import reduce
 
 from .utils import (eprint,
@@ -47,7 +46,7 @@ class ResourceBotoClient:
             response = self.client.list_objects_v2(
                 Bucket=self.bucket,
                 Prefix=self.prefix_filter)
-        except botocore.errorfactory.NoSuchBucket:  # pragma: no cover
+        except self.client.exceptions.NoSuchBucket:  # pragma: no cover
             eprint('No versions found - no bucket')
             return []
 
@@ -78,10 +77,11 @@ class ResourceBotoClient:
         return object_keys
 
     def download_file(self, *, key, destination):
+        destination.parent.mkdir(parents=True, exist_ok=True)
         self.client.download_file(
             Bucket=self.bucket,
             Key=key,
-            Filename=destination)
+            Filename=str(destination))
 
     def upload_file(self, *, source, key):
         self.client.upload_file(
