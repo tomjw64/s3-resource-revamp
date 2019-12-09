@@ -1,6 +1,9 @@
+from io import StringIO
+from contextlib import redirect_stderr
+
 import pytest
 
-from src import action_check
+from src.action_check import action_check
 
 from .helpers import (read_json_file_as_dict,
                       make_stream,
@@ -8,13 +11,32 @@ from .helpers import (read_json_file_as_dict,
 
 
 class TestCheck:
-    def test_check_empty(self, mocker):
+    def test_no_regexp_empty(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-empty.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
-        input = {}
-        result = action_check.action_check(make_stream(input))
-        assert result == []
+        stderr_output = StringIO()
+        with redirect_stderr(stderr_output):
+            result = action_check(make_stream({}))
+            assert result == []
+            assert 'No versions found - no regex' in stderr_output.getvalue()
+
+    def test_bad_response_empty(self, mocker):
+        response = read_json_file_as_dict('list-objects-v2-empty.json')
+        mock_client = mock_s3_client(mocker, list_response=response)
+        mocker.patch('boto3.client', return_value=mock_client)
+        stderr_output = StringIO()
+        with redirect_stderr(stderr_output):
+            input = {
+                'source': {
+                    'filters': {
+                        'regexp': '.*'
+                    }
+                }
+            }
+            result = action_check(make_stream(input))
+            assert result == []
+            assert 'No versions found - cannot read or none found' in stderr_output.getvalue()
 
     def test_check_minio_exact_match_latest(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio.json')
@@ -28,7 +50,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert result[0]['key'] == 'file.txt'
 
     def test_check_minio_bad_version(self, mocker):
@@ -44,7 +66,7 @@ class TestCheck:
             }
         }
         with pytest.raises(ValueError):
-            action_check.action_check(make_stream(input))
+            action_check(make_stream(input))
 
     def test_check_minio_multiple_match_latest(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
@@ -58,7 +80,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 1
         assert result[0]['key'] == 'file.text'
 
@@ -74,7 +96,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 2
 
     def test_check_aws_pretend_module_ids_are_versions_named_capture(self, mocker):
@@ -89,7 +111,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 1259
 
     def test_check_aws_pretend_module_ids_are_versions_multi_group_capture(self, mocker):
@@ -104,7 +126,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 1259
 
     def test_check_aws_pretend_module_ids_are_versions_unnamed_capture(self, mocker):
@@ -119,7 +141,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 1259
 
     def test_check_aws_pretend_module_ids_are_versions_threshold(self, mocker):
@@ -134,7 +156,7 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 13
 
     def test_check_aws_pretend_module_ids_are_versions_latest(self, mocker):
@@ -149,6 +171,6 @@ class TestCheck:
                 }
             }
         }
-        result = action_check.action_check(make_stream(input))
+        result = action_check(make_stream(input))
         assert len(result) == 1
         assert 'm63248' in result[0]['key']

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src import action_out
+from src.action_out import action_out
 
 from .helpers import (make_stream,
                       mock_s3_client)
@@ -20,7 +20,7 @@ class TestOut:
                 'upload_glob': '**/*.txt'
             }
         }
-        action_out.action_out(DIR_NO_EXIST, make_stream(input))
+        action_out(DIR_NO_EXIST, make_stream(input))
 
         mock_client.upload_file.assert_called_once_with(
             Bucket=None,
@@ -39,7 +39,7 @@ class TestOut:
                 'upload_glob': '**/*'
             }
         }
-        action_out.action_out(DIR_NO_EXIST, make_stream(input))
+        action_out(DIR_NO_EXIST, make_stream(input))
 
         mock_client.upload_file.assert_called_once_with(
             Bucket=None,

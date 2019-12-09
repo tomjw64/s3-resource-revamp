@@ -1,6 +1,6 @@
 import pytest
 
-from src import action_in
+from src.action_in import action_in
 
 from .helpers import (read_json_file_as_dict,
                       make_stream,
@@ -23,7 +23,7 @@ class TestIn:
                 'mode': 'single'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
 
         mock_client.download_file.assert_called_once_with(
             Bucket=None,
@@ -47,7 +47,7 @@ class TestIn:
                 'mode': 'single'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
 
         mock_client.download_file.assert_called_once_with(
             Bucket=None,
@@ -72,7 +72,7 @@ class TestIn:
                 'mode': 'single'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
 
         mock_client.download_file.assert_called_once_with(
             Bucket=None,
@@ -98,7 +98,7 @@ class TestIn:
             }
         }
         with pytest.raises(ValueError):
-            action_in.action_in(DIR_NO_EXIST, make_stream(input))
+            action_in(DIR_NO_EXIST, make_stream(input))
 
     def test_in_multiple_match_latest(self, mocker):
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
@@ -118,7 +118,7 @@ class TestIn:
                 'mode': 'all'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
 
         mock_client.download_file.assert_called_once_with(
             Bucket=None,
@@ -143,7 +143,7 @@ class TestIn:
                 'mode': 'all'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
         assert mock_client.download_file.call_count == 2
 
     def test_in_pretend_module_ids_are_versions_named_capture(self, mocker):
@@ -164,7 +164,7 @@ class TestIn:
                 'mode': 'all'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
         assert mock_client.download_file.call_count == 159
 
     def test_in_pretend_module_ids_are_versions_named_capture_single(self, mocker):
@@ -185,7 +185,7 @@ class TestIn:
                 'mode': 'single'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
 
         mock_client.download_file.assert_called_once_with(
             Bucket=None,
@@ -210,7 +210,7 @@ class TestIn:
                 'mode': 'all'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
         assert mock_client.download_file.call_count == 159
 
     def test_in_pretend_module_ids_are_versions_threshold(self, mocker):
@@ -231,7 +231,7 @@ class TestIn:
                 'mode': 'all'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
         assert mock_client.download_file.call_count == 2
 
     def test_in_pretend_module_ids_are_versions_latest(self, mocker):
@@ -252,7 +252,7 @@ class TestIn:
                 'mode': 'all'
             }
         }
-        action_in.action_in(DIR_NO_EXIST, make_stream(input))
+        action_in(DIR_NO_EXIST, make_stream(input))
 
         mock_client.download_file.assert_called_once_with(
             Bucket=None,
