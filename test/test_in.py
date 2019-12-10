@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from src.action_in import action_in
@@ -15,6 +17,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-empty.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'file.txt'
@@ -34,6 +37,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-minio.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'file.txt'
@@ -58,6 +62,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-minio.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'file.txt'
@@ -83,6 +88,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-minio.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'file.txt'
@@ -104,6 +110,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'file.text'
@@ -129,6 +136,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-minio-multiple-match.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'file.text'
@@ -150,6 +158,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'book/m63248/index.cnxml'
@@ -171,6 +180,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'book/m63248/index.cnxml'
@@ -196,6 +206,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'book/m63248/index.cnxml'
@@ -217,6 +228,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'book/m63248/index.cnxml'
@@ -238,6 +250,7 @@ class TestIn:
         response = read_json_file_as_dict('list-objects-v2-full-bucket.json')
         mock_client = mock_s3_client(mocker, list_response=response)
         mocker.patch('boto3.client', return_value=mock_client)
+        mocker.patch.object(Path, 'mkdir')
         input = {
             'version': {
                 'key': 'book/m63248/index.cnxml'
