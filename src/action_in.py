@@ -25,17 +25,19 @@ def action_in(dest_path, in_stream):
         return {'version': {'key': check_version}}
 
     def sync_filtered():
-        object_keys = client.list_filtered_objects()
-        for object_key in object_keys:
-            destination = Path(dest_path) / object_key['key']
+        object_key_dicts = client.list_filtered_objects()
+        object_key = None
+        for object_key_dict in object_key_dicts:
+            object_key = object_key_dict['key']
+            destination = Path(dest_path) / object_key
             if not destination.exists():
-                eprint(f'Downloading object - key: {object_key["key"]}, dest: {destination}')
+                eprint(f'Downloading object - key: {object_key}, dest: {destination}')
                 client.download_file(
-                    key=object_key['key'],
+                    key=object_key,
                     destination=destination)
 
         # This is a garbage value
-        return {'version': {'key': check_version}}
+        return {'version': {'key': object_key}} if object_key is not None else {}
 
     return {
         'all': sync_filtered,
